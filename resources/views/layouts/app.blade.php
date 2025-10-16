@@ -37,7 +37,7 @@
                     <a href="{{ route('login') }}" class="hover:text-blue-200 font-medium transition">Login</a>
                     <a href="{{ route('register') }}" class="hover:text-blue-200 font-medium transition">Daftar</a>
                 @else
-                    <a href="{{ url('/home') }}" class="hover:text-blue-200 font-medium transition">Dashboard</a>
+                    
                     <a href="{{ route('logout') }}" class="hover:text-blue-200 font-medium transition"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Logout

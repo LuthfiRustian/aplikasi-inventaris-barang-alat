@@ -41,9 +41,9 @@
       </div>
 
       <div class="flex items-center space-x-6">
-        <a href="#" class="hover:text-blue-200 transition-all">Beranda</a>
-        <a href="#" class="hover:text-blue-200 transition-all">Tentang</a>
-        <a href="#" class="hover:text-blue-200 transition-all">Kontak</a>
+        
+       
+        
 
         <!-- Tombol Dark Mode -->
         <button id="theme-toggle" class="toggle-btn text-2xl" title="Ganti tema">

@@ -19,22 +19,9 @@ class Peminjaman extends Model
         'status',
     ];
 
-    // Relasi ke Barang
+    // Relasi ke tabel barang
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_id');
     }
-
-    // Relasi ke Kategori lewat Barang
-    public function kategori()
-    {
-        return $this->hasOneThrough(
-            Kategori::class,
-            Barang::class,
-            'id',           // Foreign key di barang
-            'id',           // Foreign key di kategori
-            'barang_id',    // Foreign key di peminjaman
-            'kategori_id'   // Foreign key di barang
-);
-}
 }

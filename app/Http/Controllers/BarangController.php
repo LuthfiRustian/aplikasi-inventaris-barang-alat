@@ -8,22 +8,18 @@ use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
-    // Tampilkan semua barang
     public function index()
     {
         $barangs = Barang::with('kategori')->get();
         return view('barang.index', compact('barangs'));
     }
-    
 
-    // Form tambah barang
     public function create()
     {
         $kategori = Kategori::all();
         return view('barang.create', compact('kategori'));
     }
 
-    // Simpan barang baru
     public function store(Request $request)
     {
         $request->validate([
@@ -50,7 +46,6 @@ class BarangController extends Controller
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
     }
 
-    // Form edit
     public function edit($id)
     {
         $barang = Barang::findOrFail($id);
@@ -58,7 +53,6 @@ class BarangController extends Controller
         return view('barang.edit', compact('barang', 'kategori'));
     }
 
-    // Update barang
     public function update(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
@@ -85,13 +79,11 @@ class BarangController extends Controller
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui.');
     }
 
-    // Hapus barang
     public function destroy($id)
     {
         $barang = Barang::findOrFail($id);
         $barang->delete();
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
-    }
-    
+}
 }

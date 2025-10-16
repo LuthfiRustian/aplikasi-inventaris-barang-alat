@@ -22,12 +22,19 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:user,email', // kalau tabel kamu bernama "user"
             'password' => 'required|string|min:5',
-            'role' => 'required|in:admin,petugas',
+            'role' => 'required|in:admin,petugas,user', // tambahkan "user" di sini
         ]);
 
-        User::create($request->all());
+        // Simpan data ke database
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password, // plain text sesuai setup kamu
+            'role' => $request->role,
+        ]);
+
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
@@ -36,5 +43,5 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User dihapus.');
-}
+    }
 }

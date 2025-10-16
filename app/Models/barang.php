@@ -32,5 +32,5 @@ class Barang extends Model
     public function peminjaman()
     {
         return $this->hasMany(Peminjaman::class, 'barang_id');
-}
+    }
 }

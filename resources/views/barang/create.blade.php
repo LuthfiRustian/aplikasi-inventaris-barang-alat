@@ -28,7 +28,7 @@
         <select name="kategori_id" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white" required>
           <option value="">-- Pilih Kategori --</option>
           @foreach($kategori as $k)
-            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+            <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
           @endforeach
         </select>
       </div>

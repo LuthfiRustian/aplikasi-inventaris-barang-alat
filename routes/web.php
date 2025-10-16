@@ -1,22 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\UserController;
 
 Auth::routes();
 
-// Redirect default
+// ====================
+// Redirect Default
+// ====================
 Route::get('/', function () {
     return redirect()->route('homepage');
 });
 
-// Halaman homepage
+// ====================
+// Halaman Homepage
+// ====================
 Route::get('/homepage', function () {
     return view('layouts.homepage');
 })->name('homepage');
@@ -34,11 +38,20 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 // ====================
 // Resource Routes
 // ====================
+// Route::resource otomatis membuat route index, create, store, show, edit, update, destroy
 Route::resource('kategori', KategoriController::class);
 Route::resource('barang', BarangController::class);
 Route::resource('peminjaman', PeminjamanController::class);
+Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'destroy']);
+use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\Peminjaman;
 
-Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+Route::get('/dashboard', function () {
+    $totalBarang = Barang::count();
+    $totalKategori = Kategori::count();
+    $peminjamanAktif = Peminjaman::where('status', 'Dipinjam')->count();
+    $peminjamanSelesai = Peminjaman::where('status', 'Dikembalikan')->count();
 
-
-
+    return view('dashboard', compact('totalBarang', 'totalKategori', 'peminjamanAktif', 'peminjamanSelesai'));
+})->name('dashboard');

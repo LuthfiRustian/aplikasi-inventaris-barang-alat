@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div x-data="{ open: false }" 
      class="flex min-h-screen w-full bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
@@ -23,11 +22,12 @@
     </div>
 
     <div class="p-6 border-t border-sky-400/40">
-      <button onclick="document.getElementById('logout-form').submit()" 
-              class="w-full bg-white/20 hover:bg-white/30 py-2 rounded-lg font-semibold shadow-md transition">
-        Logout
-      </button>
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
+      <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="w-full bg-white/20 hover:bg-white/30 py-2 rounded-lg font-semibold shadow-md transition">
+          Logout
+        </button>
+      </form>
     </div>
   </aside>
 
@@ -38,11 +38,11 @@
   <main class="flex-1 p-6 overflow-x-auto">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center">
-        <span class="text-3xl mr-2">📋</span> Daftar Barang
+        <span class="text-3xl mr-2">📘</span> Daftar Peminjaman Barang
       </h2>
-      <a href="{{ route('barang.create') }}"
+      <a href="{{ route('peminjaman.create') }}"
          class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold px-5 py-2 rounded-lg shadow-lg transition-all transform hover:-translate-y-0.5">
-        + Tambah Barang
+        + Tambah Peminjaman
       </a>
     </div>
 
@@ -52,47 +52,32 @@
           <thead>
             <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
               <th class="px-4 py-3 text-left rounded-tl-lg">ID</th>
-              <th class="px-4 py-3 text-left">Kode</th>
-              <th class="px-4 py-3 text-left">Nama Barang</th>
-              <th class="px-4 py-3 text-left">Kategori</th>
-              <th class="px-4 py-3 text-left">Jumlah</th>
-              <th class="px-4 py-3 text-left">Kondisi</th>
+              <th class="px-4 py-3 text-left">Peminjam</th>
+              <th class="px-4 py-3 text-left">Barang</th>
+              <th class="px-4 py-3 text-left">Tanggal Pinjam</th>
+              <th class="px-4 py-3 text-left">Tanggal Kembali</th>
+              <th class="px-4 py-3 text-left">Status</th>
               <th class="px-4 py-3 text-left rounded-tr-lg">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            @forelse($barangs as $barang)
+            @forelse($peminjaman as $pinjam)
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                <td class="px-4 py-3">{{ $barang->id }}</td>
-                <td class="px-4 py-3 font-medium">{{ $barang->kode_barang }}</td>
-
-                <!-- Tooltip Gambar -->
-                <td class="px-4 py-3 relative group cursor-pointer">
-                  <span class="font-medium text-gray-800 dark:text-gray-100">{{ $barang->nama_barang }}</span>
-
-                  @if($barang->gambar)
-                    <div class="absolute hidden group-hover:flex flex-col items-center left-1/2 transform -translate-x-1/2 mt-2 z-50">
-                      <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-2 w-44 animate-fadeIn">
-                        <img src="{{ asset('uploads/barang/' . basename($barang->gambar)) }}" 
-                             alt="{{ $barang->nama_barang }}" 
-                             class="w-full h-28 object-cover rounded-md">
-                        <p class="text-xs text-gray-700 text-center mt-2">{{ $barang->nama_barang }}</p>
-                      </div>
-                    </div>
-                  @endif
+                <td class="px-4 py-3">{{ $pinjam->id }}</td>
+                <td class="px-4 py-3 font-semibold">{{ $pinjam->peminjam }}</td>
+                <td class="px-4 py-3">{{ $pinjam->barang->nama_barang ?? '-' }}</td>
+                <td class="px-4 py-3">{{ \Carbon\Carbon::parse($pinjam->tanggal_pinjam)->format('d M Y') }}</td>
+                <td class="px-4 py-3">
+                  {{ $pinjam->tanggal_kembali ? \Carbon\Carbon::parse($pinjam->tanggal_kembali)->format('d M Y') : '-' }}
                 </td>
-
-                <td class="px-4 py-3">{{ $barang->kategori->nama_kategori ?? '-' }}</td>
-                <td class="px-4 py-3">{{ $barang->jumlah }} {{ $barang->satuan }}</td>
                 <td class="px-4 py-3">
                   <span class="px-3 py-1 rounded-full text-xs md:text-sm font-semibold
-                    {{ $barang->kondisi == 'Baik' ? 'bg-green-100 text-green-800' : ($barang->kondisi == 'Rusak' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                    {{ $barang->kondisi }}
+                    {{ $pinjam->status == 'Dikembalikan' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                    {{ $pinjam->status }}
                   </span>
                 </td>
-                <td class="px-4 py-3 flex flex-col md:flex-row gap-2">
-                  <a href="{{ route('barang.edit', $barang->id) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Edit</a>
-                  <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                <td class="px-4 py-3">
+                  <form action="{{ route('peminjaman.destroy', $pinjam->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-rose-600 hover:text-rose-800 font-medium">Hapus</button>
@@ -101,7 +86,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="7" class="text-center py-6 text-gray-500 dark:text-gray-400">Belum ada data barang.</td>
+                <td colspan="7" class="text-center py-6 text-gray-500 dark:text-gray-400">Belum ada data peminjaman.</td>
               </tr>
             @endforelse
           </tbody>
@@ -111,12 +96,6 @@
   </main>
 </div>
 
-<style>
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
-
+<!-- Alpine.js -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 @endsection
